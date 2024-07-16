@@ -57,7 +57,7 @@ Food and Beverage,food_drink
 "Books, Music, and Movies",music
 "Books, Music, and Movies",cds_dvds_musicals
 "Books, Music, and Movies",musical_instruments
-Misc,pet_shop
+Pets,pet_shop
 Misc,signaling_and_security
 Misc,market_place
 Misc,art
@@ -66,5 +66,5 @@ Misc,christmas_supplies
 Misc,arts_and_craftmanship
 Misc,flowers
 Misc,security_and_services
-Misc,auto
-Misc,baby
+Auto,auto
+Baby,baby
