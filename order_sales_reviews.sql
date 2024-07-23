@@ -1,15 +1,55 @@
 WITH orders_plus AS (
-SELECT o.*, sum(i.price) sales, max(c.customer_unique_id) cust_id, 
+SELECT 
+    o.*, sum(i.price) sales, max(c.customer_unique_id) cust_id, max(c.customer_zip_code_prefix) cust_zip, 
     count(i.price) units, max(r.review_comment_message) review_message, AVG(r.review_score) review_score, 
     DATEDIFF(order_delivered_customer_date, order_estimated_delivery_date) days_from_est_deliv
-FROM orders o
-LEFT JOIN order_items i
-ON o.order_id = i.order_id
-LEFT JOIN order_reviews r
-ON o.order_id = r.order_id
-LEFT JOIN customers c 
-ON o.customer_id = c.customer_id
-GROUP BY o.order_id
+FROM 
+    orders o
+LEFT JOIN 
+    order_items i
+ON 
+    o.order_id = i.order_id
+LEFT JOIN 
+    order_reviews r
+ON 
+    o.order_id = r.order_id
+LEFT JOIN 
+    customers c 
+ON 
+    o.customer_id = c.customer_id
+GROUP BY 
+    o.order_id
+),
+
+order_count AS (
+SELECT
+    cust_id,
+    order_purchase_timestamp,
+    ROW_NUMBER() OVER (PARTITION BY cust_id ORDER BY order_purchase_timestamp) AS order_count,
+    DATEDIFF(
+        LAG(order_purchase_timestamp) OVER (PARTITION BY cust_id ORDER BY order_purchase_timestamp),
+        order_purchase_timestamp
+    )*-1 AS days_between_orders
+FROM
+    orders_plus
+ORDER BY
+    cust_id, order_purchase_timestamp
+
+), 
+
+orders_final AS (
+SELECT 
+    o.*, c.order_count, c.days_between_orders
+FROM 
+    orders_plus o
+LEFT JOIN 
+    order_count c
+ON
+    o.cust_id = c.cust_id 
+AND 
+    o.order_purchase_timestamp = c.order_purchase_timestamp
+ORDER BY
+    o.cust_id, o.order_purchase_timestamp
 )
 
 SELECT o.*, 
@@ -19,4 +59,4 @@ SELECT o.*,
         ELSE "late"
     END
     ) on_time
-FROM orders_plus o
+FROM orders_final o
