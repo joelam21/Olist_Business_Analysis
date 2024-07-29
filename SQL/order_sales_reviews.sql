@@ -1,7 +1,18 @@
-WITH orders_plus AS (
+WITH reviews AS (
+SELECT 
+    order_id, max(review_score) review_score, max(review_comment_title) review_comment_title, 
+    max(review_comment_message) review_comment_message, max(review_creation_date) review_creation_date, 
+    max(review_answer_timestamp) review_answer_timestamp
+FROM 
+    order_reviews
+GROUP BY
+    order_id
+), 
+
+orders_plus AS (
 SELECT 
     o.*, sum(i.price) sales, max(c.customer_unique_id) cust_id, max(c.customer_zip_code_prefix) cust_zip, 
-    count(i.price) units, max(r.review_comment_message) review_message, AVG(r.review_score) review_score, 
+    count(i.price) units, max(r.review_comment_message) review_message, AVG(r.review_score) review_score,
     DATEDIFF(order_delivered_customer_date, order_estimated_delivery_date) days_from_est_deliv
 FROM 
     orders o
@@ -10,7 +21,7 @@ LEFT JOIN
 ON 
     o.order_id = i.order_id
 LEFT JOIN 
-    order_reviews r
+    reviews r
 ON 
     o.order_id = r.order_id
 LEFT JOIN 
@@ -23,7 +34,7 @@ GROUP BY
 
 order_count AS (
 SELECT
-    cust_id,
+    cust_id, order_id, 
     order_purchase_timestamp,
     ROW_NUMBER() OVER (PARTITION BY cust_id ORDER BY order_purchase_timestamp) AS order_count,
     DATEDIFF(
@@ -47,10 +58,11 @@ LEFT JOIN
 ON
     o.cust_id = c.cust_id 
 AND 
-    o.order_purchase_timestamp = c.order_purchase_timestamp
+    o.order_id = c.order_id
 ORDER BY
     o.cust_id, o.order_purchase_timestamp
 )
+
 
 SELECT o.*, 
     (CASE 
@@ -60,3 +72,14 @@ SELECT o.*,
     END
     ) on_time
 FROM orders_final o
+
+/*
+
+ # check for duplicates
+
+SELECT order_id, count(*)
+FROM orders_final
+GROUP BY order_id
+HAVING COUNT(*) > 1
+
+*/
