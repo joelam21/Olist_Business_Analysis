@@ -93,4 +93,4 @@ The following datasets were used in this project:
 ## Contact
 For any questions or feedback, please contact:
 - Email: joelam21@gmail.com
-- GitHub: [Your GitHub Profile](https://github.com/joelam21)
+- GitHub: (https://github.com/joelam21)
