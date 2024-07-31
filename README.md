@@ -86,9 +86,10 @@ The following datasets were used in this project:
 
 ## Documentation
 - The final PDF reports generated from Tableau and Looker are available in the `Documentation` folder.
-- [Order Items and Products Report](Documentation/order_items_products_report.pdf)
-- [Order Sales Review Categories Report](Documentation/order_sales_review_cats_report.pdf)
-
+- [Tableau PDF Version of Report](Documentation/Olist_Report_Tableau.pdf)
+- [Looker PDF Version of Report](Documentation/Olist_Report_Looker.pdf)
+- [Tableau Web Version of Report](https://public.tableau.com/app/profile/joe.lam1433/viz/olist_report_tableau/OlistBusinessAnalysis)
+- [Looker Web Version of Report](https://lookerstudio.google.com/reporting/58be1018-9d17-46b0-8762-5b88be02163f/page/p_lf4qzlm8id/edit)
 ## Contact
 For any questions or feedback, please contact:
 - Email: joelam21@gmail.com
